@@ -1,0 +1,208 @@
+#import Module
+from pymongo import MongoClient
+
+# creation of Mongoclient,connect with port number and host to Mongodb
+client=MongoClient("mongodb://localhost:27017/")
+
+#showing all database
+db_list = client.list_database_names()
+print("database names :",db_list)
+
+# creating a database name college and showing
+database=client.college
+print('database created name college')
+print()
+
+
+# creating a collection name student
+student=database.student
+print("Collection named student is created. ")
+print()
+
+#creating Dictionary,single student data
+student1={
+    'roll_no':"001",
+    'name':"Ashok",
+    'age':"20",
+    'course':{
+        'coursename':'Engineering',
+        'duration':"4 years",
+    },
+    'addresss':"Mumbai",
+}
+
+# creating a list, multiple data inserting in collection student
+student2=[
+    {
+    'roll_no':"002",
+    'name':"Aman",
+    'age':"21",
+    'course':{
+        'coursename':'Engineering',
+        'duration':"4 years",
+    },
+    'addresss':"Patna",
+},
+    {
+    'roll_no':"003",
+    'name':"Aryan",
+    'age':"22",
+    'course':{
+        'coursename':'Engineering',
+        'duration':"4 years",
+    },
+    'addresss':"Mumbai",
+},
+    {
+    'roll_no':"004",
+    'name':"Ashutosh",
+    'age':"20",
+    'course':{
+        'coursename':'Engineering',
+        'duration':"4 years",
+    },
+    'addresss':"Nagpur",
+}
+ ]
+
+#inserting single student data using insert_one() method
+student.insert_one(student1)
+print("\n single filed inserted in Student collection.")
+
+# Displaying single data by using find_one method
+print(student.find_one())
+print()
+
+
+
+#inserting multiple data using insert_many() method.
+student.insert_many(student2)
+print("\n Multiple field inserted in collection Student. ")
+
+# displaying multiple data using find() method
+for data in student.find({}):
+    print(data)
+print()
+
+
+# finding specific field using key value pair
+print(" find specific field, using specific key & value : ")
+print("student having age as 20 :")
+for data in student.find({'age':"20"}):
+    print(data)
+print()
+
+
+
+# updating specific field using update_one()
+student.update_one(
+    {
+        'name':'Aman'
+    },
+    {
+        "$set":{
+            'age':'23'
+        }
+    }
+)
+print("updated the record :Aman set age 23")
+print(student.find_one({'name':'Aman'}))
+print()
+
+# updating Student collection fields using update_many()
+student.update_many({},
+    {
+        "$set":{
+            'Pursuing_year':2022
+        }
+    }
+)
+print("updates all the record: adding pursuing year")
+for data in student.find({}):
+    print(data)
+print()
+
+
+# Delete specific field using key value and method delete_one()
+student.delete_one({'name':'Ashok'})
+print("Deleted the record with name Ashok")
+print()
+print("remaining record after deletion")
+for data in student.find({}):
+    print(data)
+print()
+
+
+# deleting student collection fields using method delete_many()
+student.delete_many({})
+print("All records are deleted.")
+print()
+for data in student.find({}):
+    print(data)
+    
+# droping database
+print("Current databses are having collection: ")
+db_list = client.list_database_names()
+print("database names :",db_list)
+print()
+print("Databases after deleting collection")
+client.drop_database('college')
+db_list = client.list_database_names()
+print("database names :",db_list)
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+output-
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Install the latest PowerShell for new features and improvements! https://aka.ms/PSWindows
+
+PS C:\Users\Ashutosh Raj Gupta\Desktop\python_projects\mongodb> python -u "c:\Users\Ashutosh Raj Gupta\Desktop\python_projects\mongodb\mongo.py"
+database names : ['Assignment', 'admin', 'book', 'config', 'local']
+database created name college
+
+Collection named student is created. 
+
+
+ single filed inserted in Student collection.
+{'_id': ObjectId('634af4232e43671e6e09b776'), 'roll_no': '001', 'name': 'Ashok', 'age': '20', 'course': {'coursename': 'Engineering', 'duration': '4 years'}, 'addresss': 'Mumbai'}
+
+
+ Multiple field inserted in collection Student. 
+{'_id': ObjectId('634af4232e43671e6e09b776'), 'roll_no': '001', 'name': 'Ashok', 'age': '20', 'course': {'coursename': 'Engineering', 'duration': '4 years'}, 'addresss': 'Mumbai'}
+{'_id': ObjectId('634af4232e43671e6e09b777'), 'roll_no': '002', 'name': 'Aman', 'age': '21', 'course': {'coursename': 'Engineering', 'duration': '4 years'}, 'addresss': 'Patna'}
+{'_id': ObjectId('634af4232e43671e6e09b778'), 'roll_no': '003', 'name': 'Aryan', 'age': '22', 'course': {'coursename': 'Engineering', 'duration': '4 years'}, 'addresss': 'Mumbai'}
+{'_id': ObjectId('634af4232e43671e6e09b779'), 'roll_no': '004', 'name': 'Ashutosh', 'age': '20', 'course': {'coursename': 'Engineering', 'duration': '4 years'}, 'addresss': 'Nagpur'}
+
+ find specific field, using specific key & value : 
+{'_id': ObjectId('634af4232e43671e6e09b776'), 'roll_no': '001', 'name': 'Ashok', 'age': '20', 'course': {'coursename': 'Engineering', 'duration': '4 years'}, 'addresss': 'Mumbai'}
+{'_id': ObjectId('634af4232e43671e6e09b779'), 'roll_no': '004', 'name': 'Ashutosh', 'age': '20', 'course': {'coursename': 'Engineering', 'duration': '4 years'}, 'addresss': 'Nagpur'}
+
+updated the record :Aman
+{'_id': ObjectId('634af4232e43671e6e09b777'), 'roll_no': '002', 'name': 'Aman', 'age': '23', 'course': {'coursename': 'Engineering', 'duration': '4 years'}, 'addresss': 'Patna'}
+
+updates all the record:
+{'_id': ObjectId('634af4232e43671e6e09b776'), 'roll_no': '001', 'name': 'Ashok', 'age': '20', 'course': {'coursename': 'Engineering', 'duration': '4 years'}, 'addresss': 'Mumbai', 'Pursing_year': 2022}
+{'_id': ObjectId('634af4232e43671e6e09b777'), 'roll_no': '002', 'name': 'Aman', 'age': '23', 'course': {'coursename': 'Engineering', 'duration': '4 years'}, 'addresss': 'Patna', 'Pursing_year': 2022}
+{'_id': ObjectId('634af4232e43671e6e09b778'), 'roll_no': '003', 'name': 'Aryan', 'age': '22', 'course': {'coursename': 'Engineering', 'duration': '4 years'}, 'addresss': 'Mumbai', 'Pursing_year': 2022}
+{'_id': ObjectId('634af4232e43671e6e09b779'), 'roll_no': '004', 'name': 'Ashutosh', 'age': '20', 'course': {'coursename': 'Engineering', 'duration': '4 years'}, 'addresss': 'Nagpur', 'Pursing_year': 2022}
+
+Deleted the record with name Ashok
+
+remaining record after deletion
+{'_id': ObjectId('634af4232e43671e6e09b777'), 'roll_no': '002', 'name': 'Aman', 'age': '23', 'course': {'coursename': 'Engineering', 'duration': '4 years'}, 'addresss': 'Patna', 'Pursing_year': 2022}
+{'_id': ObjectId('634af4232e43671e6e09b778'), 'roll_no': '003', 'name': 'Aryan', 'age': '22', 'course': {'coursename': 'Engineering', 'duration': '4 years'}, 'addresss': 'Mumbai', 'Pursing_year': 2022}
+{'_id': ObjectId('634af4232e43671e6e09b779'), 'roll_no': '004', 'name': 'Ashutosh', 'age': '20', 'course': {'coursename': 'Engineering', 'duration': '4 years'}, 'addresss': 'Nagpur', 'Pursing_year': 2022}
+
+All records are deleted.
+
+Current databses are:
+database names : ['Assignment', 'admin', 'book', 'college', 'config', 'local']
+
+Databases after deleting college
+database names : ['Assignment', 'admin', 'book', 'config', 'local']
+PS C:\Users\Ashutosh Raj Gupta\Desktop\python_projects\mongodb> 
